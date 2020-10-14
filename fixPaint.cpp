@@ -1,0 +1,259 @@
+// Is is weird that j = 0 in last line
+
+#include "fixPaint.h"
+
+int dp[26][14];
+int d[Len/2+1];
+char S[Len+1] = {'u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u'};
+int f1[Len+1];
+int f0[Len+1];
+int low[Len+1];
+int line[Len];
+
+int FixPaint::lineSolving( int *data, Board b ){
+
+    for( int num = 49; num < 50; num++ ){
+
+        b.getLine(line, num);
+        b.printLine(line);
+
+        int dataShift = num*maxClue;
+        printf("datashift = %d\n", dataShift );
+        int j = data[dataShift];
+        printf("j = %d\n", j );
+        int i = Len;
+        init_dp();
+        init_var( d, Len/2+1);
+        init_var( f1, Len+1 );
+        init_var( f0, Len+1 );
+        init_var( low, Len+1 );
+        printf("i = %d\n", i );
+        int f = get_f( data, num );
+        printf("f = %d\n", f );
+        printf("=====================\n");
+        P(i, f, j);
+        
+        printf("=====================\n");
+        printf("d[1] = %d\n", d[1] );
+        printf("\n");
+        printf("fix1 --> ");
+        printInt(f1,Len+1);
+        printf("fix0 --> ");
+        printInt(f0,Len+1);
+        printf("low --> ");
+        printInt(low,Len+1);
+        printf("\n");
+        
+        insert(line);
+        b.printLine(line);
+        b.recover(line, num);
+        init_S();
+    }
+    //b.printBoard();
+
+    
+
+    return CORRECT;
+
+}
+
+void FixPaint::printInt( int* array, int l ){
+    for( int i = 1; i < l; i++ ){
+        printf("%d ", array[i]);
+    }
+    printf("\n");
+}
+
+void FixPaint::printLine(){
+    for( int i = 1; i < Len+1; i++ ){
+        printf("%2d ", i );
+    }
+    printf("\n");
+    for( int i = 1; i < Len+1; i++ ){
+        printf("%2c ", S[i]);
+    }
+    printf("\n");
+}
+
+int FixPaint::get_f( int *data, int num ){
+
+    int dataShift = num*maxClue;
+        int j = data[dataShift];
+        int totaClue = 0;
+        for( int i = 0; i < j; i++ ){
+            d[i+1] = data[dataShift+i+1];
+            //printf("d[%d] = %d\n", i, d[i] );
+            totaClue += data[dataShift+i+1]; // because the fisrt one is j
+        }
+        totaClue = totaClue + j - 1;
+    return Len - totaClue;
+}
+
+void FixPaint::init_var( int* array, int s ){
+    for( int counter = 0; counter < s; counter++ ){
+        array[counter] = 0;
+    }
+}
+
+void FixPaint::init_S(){
+    for( int i = 0; i < Len+1; i++ ){
+        S[i] = 'X';
+    }
+}
+
+bool FixPaint::P( int i, int f, int j ){
+    printf("------ %d,%d\n", i, j );
+    //level++;
+
+    // dp
+    if(dp[i][j] == 1){
+        return true;
+    }
+    else if(dp[i][j] == 0){
+        return false;
+    }
+
+    if( i == 0 && j == 0 ){
+        dp[i][j] = 1;
+        return true;
+    }
+    else if(j == 0){
+        if(check_remaining_one(i)){
+            //printf("TWO P0 true P1 false ");
+            f0[i] = true; // paint1 is false paint0 is true
+            //printf("%d,%d\n", i, j );
+            dp[i][j] = 1;
+            return true;
+        }
+        else{
+            dp[i][j] = 0;
+            return false;
+        }
+    }
+    else if( i == 0 && j >= 1 ){ // maybe it won't happen, so we put it to the last
+        //printf("ONE both false !!!!!");
+        //printf("%d,%d\n", i, j );
+        dp[i][j] = 0;
+        return false;
+    }
+    bool tempP0,tempP1;
+    // paint1
+    if( j > 1 && check(i, j)){
+        //printf("d[j] = %d, j = %d\n", d[j], j  );
+        tempP1 = P( i - d[j] - 1, f, j - 1 );
+    }
+    else if( j == 1 && check(i, j)){
+        tempP1 = P( i - d[j], f, j - 1 );
+    }
+    else{
+        tempP1 = false;
+    }
+
+    // paint0
+    if( S[i] != '1' && f > 0){
+        tempP0 = P( i - 1, f - 1, j);
+    }
+    else{
+        tempP0 = false;
+    }
+
+
+    if(tempP1 == true && tempP0 == false){
+        //printf("FOUR P1 true P0 false ");
+        f1[i] = true;
+        low[i] = i - d[j] + 1;
+        if(j > 1){
+            f0[i-d[j]] = 1; // remember paint i - d[j] to 0
+        }
+        //printf("%d,%d\n", i, j );
+        dp[i][j] = 1;
+        return true;
+    }
+    else if(tempP1==true&&tempP0==true){
+        //printf("SIX both true ");
+        f1[i] = true;
+        if(j > 1){
+            f0[i-d[j]] = 1; // remember paint i - d[j] to 0
+        }
+        low[i] = i - d[j] + 1;
+        f0[i] = true;
+        //printf("%d,%d\n", i, j );
+        dp[i][j] = 1;
+        return true;
+    }
+    else if( tempP0 == true && tempP1 == false ){
+        //printf("FIFE P0 true P1 false ");
+        f0[i] = true;
+        //printf("%d,%d\n", i, j );
+        dp[i][j] = 1;
+        return true;
+    }
+    else{
+        //printf("THREE both false ");
+        //printf("%d,%d\n", i, j );
+        dp[i][j] = 0;
+    }
+    //printf("!!!!\n");  
+    return false;
+}
+
+bool FixPaint::check( int i, int j ){
+    for( int count = i - d[j] + 1; count <= i; count++ ){
+        if( S[count] == '0'){
+            return false;
+        }
+    }
+    if(S[i-d[j]] == '1'){
+    	return false;
+    }
+    
+    return true;
+}
+
+bool FixPaint::check_remaining_one( int i ){
+    for( int count = 0; count < i; count++ ){
+        if( S[count] == '1'){
+            return false;
+        }
+    }
+    return true;
+}
+
+void FixPaint::init_dp(){
+    for( int x = 0; x <= 25; x++ ){
+        for( int y = 0; y <= 13; y++ ){
+            dp[x][y] = 2;
+        }
+    }
+}
+
+void FixPaint::insert( int* line ){
+
+    for( int i = 1; i < Len+1; i++ ){
+        if( f1[i]==true && low[i]!=0 ){
+            for(int j = low[i]; j <= i; j++ ){
+                f1[j] = 1;
+            }
+        }
+    }
+
+    /*
+    printf("fix1 --> ");
+    printInt(f1,Len+1);
+    printf("fix0 --> ");
+    printInt(f0,Len+1);
+    */
+
+    for( int i = 1; i < Len+1; i++ ){
+        if(f1[i] == true && f0[i] == false){
+            S[i] = '1';
+            line[i-1] = 1;
+        }
+        else if(f0[i] == true && f1[i] == false){
+            S[i] = '0';
+            line[i-1] = 0;
+        }
+    }
+
+    
+}
