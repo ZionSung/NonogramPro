@@ -10,7 +10,7 @@ This code is for our research on solving Nonogram's Problems in more efficient w
 There are two main ways to solve the problem, which is logic-based another is combinatorial. We want to know that wheather there is the fastest or best way to solve Nonogram's Problems.
 
 ### Competition
-We have won the champion in TCGA2020 !!! ( Of course, the code, NonogramPro, is not the competition code, this code is for our research )
+We have won the championship in TCGA2020 !!! ( Of course, the code, NonogramPro, is not the competition code, this code is for our research )
 
 
 ### What is Nonogram?
