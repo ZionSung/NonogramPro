@@ -2,7 +2,7 @@
 Key Words: NP-complete, CSP, logic ad-hoc heuristics, combinatorial ad-hoc heuristics, AI, backtracking
 
 My college(NTCU in Taiwan Taichung) graduate project.
-Still Working Now
+--- Still Working Now
 
 ### Abstract
 This code is for our research on solving Nonogram's Problems in more efficient way.
