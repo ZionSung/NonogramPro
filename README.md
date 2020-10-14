@@ -1,2 +1,7 @@
 # NonogramPro
-Combine Logic based Solution &amp; Combinatorial Solution ( cont. developing )
+
+My college graduate project.
+
+## Introduction of Nonogram
+
+Now is in reseach steps. 
