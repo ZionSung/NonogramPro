@@ -1,2 +1,2 @@
 # NonogramPro
-Combine Logic based Solution &amp; Combinatorial Solution
+Combine Logic based Solution &amp; Combinatorial Solution ( cont. )
