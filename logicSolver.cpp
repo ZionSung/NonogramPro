@@ -17,8 +17,7 @@ int shift = 0;
 
 int finish[probLen]{};
 
-int LogicSolver::RLmost( int *data, Board b ){
-
+Board LogicSolver::RLmost( int *data, Board b ){
     // run each line
     for( int num = 0; num < probLen; num++ ){
         //printf("%d -- \n", num+1 );
@@ -57,9 +56,9 @@ int LogicSolver::RLmost( int *data, Board b ){
         b.recover(line,num);
     }
     
-    b.printBoard();
+    b.printBoard(b);
 
-    return CORRECT;
+    return b;
 }
 
 int LogicSolver::EdgeSpreading( int *data, Board b ){
@@ -104,7 +103,7 @@ int LogicSolver::EdgeSpreading( int *data, Board b ){
         b.recover(line,num);
     }
 
-    b.printBoard();
+    b.printBoard(b);
     //printf("SUB1 ========== SUB1 ========== SUB1 ==========\n\n");
 
     return CORRECT;   
@@ -395,7 +394,7 @@ int LogicSolver::Padding( int *data, Board b ){
         b.printLine(line);
     } // end for
     //printf("printf BORD!!\n");
-    b.printBoard();
+    b.printBoard(b);
     
     printf("finish\n");
     for( int i = 0; i < probLen; i++ ){

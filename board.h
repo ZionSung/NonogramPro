@@ -6,12 +6,14 @@
 class Board
 {
     public:
+        int orgBoard[Len][Len];
         //int newPaint = 1;
         Board();
         void getLine( int*, int );
         void recover( int*, int );
         void printLine( int* );
-        void printBoard();
+        void printBoard(Board&);
+        void CompareBoard( Board&, Board& );
 };
 
 #endif

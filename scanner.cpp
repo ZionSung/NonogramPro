@@ -44,13 +44,13 @@ void readFile(){
                 else
                     g += offset;
                 
-                printf("i = %d, maxClue = %d, count = %d\n", i, maxClue, count );
-                printf("[%d][%d] = %d\n", probNum, i * maxClue + count, n );
+                //printf("i = %d, maxClue = %d, count = %d\n", i, maxClue, count );
+                //printf("[%d][%d] = %d\n", probNum, i * maxClue + count, n );
                 inputData[probNum][ i * maxClue + count ] = n;
                 if ( c == 10 || c == 13 )
                 {
                     inputData[probNum][i * maxClue] = count;
-                    printf("inputData[%d][%d] = %d !!\n", probNum, i * maxClue, inputData[probNum][i * maxClue]);
+                    //printf("inputData[%d][%d] = %d !!\n", probNum, i * maxClue, inputData[probNum][i * maxClue]);
                     break;
                 }
                 count++;

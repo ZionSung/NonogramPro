@@ -9,7 +9,7 @@ class FixPaint
 {
     public:
         FixPaint(){}
-        int lineSolving( int*, Board );
+        Board lineSolving( int*, Board );
         void printLine();
         int get_f( int*, int );
         void init_var( int*, int );
@@ -18,7 +18,7 @@ class FixPaint
         bool check( int, int );
         bool check_remaining_one( int );
         void init_dp();
-        void insert( int* );
+        void insert( int*, int );
         void printInt( int*, int );
 
 };

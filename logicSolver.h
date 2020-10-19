@@ -9,7 +9,7 @@ class LogicSolver
 {
     public:
         LogicSolver() {}
-        int RLmost( int* , Board );
+        Board RLmost( int* , Board );
         int EdgeSpreading( int*, Board );
         int Padding( int*, Board );
         int AccRLmost( int*, Board ); // According

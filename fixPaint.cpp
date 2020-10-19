@@ -1,4 +1,5 @@
-// Is is weird that j = 0 in last line
+// 10/18 0429
+// new pixel for propagate;
 
 #include "fixPaint.h"
 
@@ -9,30 +10,33 @@ int f1[Len+1];
 int f0[Len+1];
 int low[Len+1];
 int line[Len];
+int new_pixel[50]{};
+int hasNewPaint = 0;
 
-int FixPaint::lineSolving( int *data, Board b ){
+Board FixPaint::lineSolving( int *data, Board b ){
 
-    for( int num = 49; num < 50; num++ ){
+    for( int num = 0; num < probLen; num++ ){
 
         b.getLine(line, num);
-        b.printLine(line);
+        //b.printLine(line);
 
         int dataShift = num*maxClue;
-        printf("datashift = %d\n", dataShift );
+        //printf("datashift = %d\n", dataShift );
         int j = data[dataShift];
-        printf("j = %d\n", j );
+        //printf("j = %d\n", j );
         int i = Len;
         init_dp();
         init_var( d, Len/2+1);
         init_var( f1, Len+1 );
         init_var( f0, Len+1 );
         init_var( low, Len+1 );
-        printf("i = %d\n", i );
+        //printf("i = %d\n", i );
         int f = get_f( data, num );
-        printf("f = %d\n", f );
-        printf("=====================\n");
+        //printf("f = %d\n", f );
+        //printf("=====================\n");
         P(i, f, j);
         
+        /*
         printf("=====================\n");
         printf("d[1] = %d\n", d[1] );
         printf("\n");
@@ -43,17 +47,55 @@ int FixPaint::lineSolving( int *data, Board b ){
         printf("low --> ");
         printInt(low,Len+1);
         printf("\n");
+        */
         
-        insert(line);
-        b.printLine(line);
+        insert(line, num );
+        //b.printLine(line);
         b.recover(line, num);
         init_S();
     }
-    //b.printBoard();
+
+    while( hasNewPaint == 1 ){
+        //printf("HasNewPixel!\n");
+        hasNewPaint = 0;
+
+        for( int num = 0; num < probLen; num++ ){
+            if( new_pixel[num] == 1 ){
+                //printf("num = %d\n", num );
+                b.getLine(line, num);
+                //b.printLine(line);
+
+                int dataShift = num*maxClue;
+                //printf("datashift = %d\n", dataShift );
+                int j = data[dataShift];
+                //printf("j = %d\n", j );
+                int i = Len;
+                init_dp();
+                init_var( d, Len/2+1);
+                init_var( f1, Len+1 );
+                init_var( f0, Len+1 );
+                init_var( low, Len+1 );
+                //printf("i = %d\n", i );
+                int f = get_f( data, num );
+                //printf("f = %d\n", f );
+                //printf("=====================\n");
+                P(i, f, j);
+        
+                insert(line, num );
+                //b.printLine(line);
+                b.recover(line, num);
+                init_S();
+            }
+        }
+        init_var( new_pixel, probLen );        
+    }
+
+
+    b.printBoard(b);
 
     
 
-    return CORRECT;
+    return b;
 
 }
 
@@ -102,7 +144,7 @@ void FixPaint::init_S(){
 }
 
 bool FixPaint::P( int i, int f, int j ){
-    printf("------ %d,%d\n", i, j );
+    //printf("------ %d,%d\n", i, j );
     //level++;
 
     // dp
@@ -227,7 +269,7 @@ void FixPaint::init_dp(){
     }
 }
 
-void FixPaint::insert( int* line ){
+void FixPaint::insert( int* line, int num ){
 
     for( int i = 1; i < Len+1; i++ ){
         if( f1[i]==true && low[i]!=0 ){
@@ -246,12 +288,30 @@ void FixPaint::insert( int* line ){
 
     for( int i = 1; i < Len+1; i++ ){
         if(f1[i] == true && f0[i] == false){
-            S[i] = '1';
-            line[i-1] = 1;
+            if( line[i-1] == 1){
+                //printf("It's already One\n");
+            }
+            else
+            {
+                line[i-1] = 1;
+                //printf("new pixel 1 at [%d][%d]\n", i-1, num );
+                new_pixel[i-1] = 1;
+                new_pixel[num] = 1;
+                hasNewPaint = 1;
+            }
+            
         }
         else if(f0[i] == true && f1[i] == false){
-            S[i] = '0';
-            line[i-1] = 0;
+            if( line[i-1] == 0){
+                //printf("It's already Zero\n");
+            }
+            else{
+                line[i-1] = 0;
+                //printf("new pixel 0\n");
+                new_pixel[i-1] = 1;
+                new_pixel[num] = 1;
+                hasNewPaint = 1;
+            }
         }
     }
 
