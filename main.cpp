@@ -6,7 +6,7 @@
 
 #include "scanner.h"
 #include "cdef.h"
-#include "Board.h"
+#include "board.h"
 #include "commander.h"
 
 using namespace std;

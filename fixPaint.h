@@ -1,5 +1,5 @@
 #ifndef FIXPAINT_H
-#define FIXPAIN_H
+#define FIXPAINT_H
 
 #include <cstdio>
 #include <cstring>
