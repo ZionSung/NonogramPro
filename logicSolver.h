@@ -10,6 +10,8 @@ class LogicSolver
     public:
         LogicSolver() {}
         Board RLmost( int* , Board );
+        Board Sub2( int*, Board );
+        
         int EdgeSpreading( int*, Board );
         int Padding( int*, Board );
         int AccRLmost( int*, Board ); // According

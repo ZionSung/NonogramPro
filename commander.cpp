@@ -14,10 +14,11 @@ int Commander::Start( int* data ){
 
     //b.printBoard();
     b1 = fpSolver.lineSolving( data, b );
-    useBoard.CompareBoard( b, b1 );
-    b2 = lgSolver.RLmost( data, b );
-    useBoard.CompareBoard( b, b2 );
-    useBoard.CompareBoard( b1, b2 );
+    //useBoard.CompareBoard( b, b1 );
+    //b2 = lgSolver.RLmost( data, b );
+    //useBoard.CompareBoard( b1, b2 );
+    
+    
     //lgSolver.EdgeSpreading( data, b1 );
     //lgSolver.Padding( data, b );
     //lgSolver.Padding( data, b );

@@ -61,6 +61,22 @@ Board LogicSolver::RLmost( int *data, Board b ){
     return b;
 }
 
+
+
+Board LogicSolver::Sub2( int *data, Board b ){
+    for( int num = 0; num < probLen; num++ ){
+        int line[Len];
+        b.getLine( line, num );
+
+    }
+
+    return b;
+}
+
+
+
+
+
 int LogicSolver::EdgeSpreading( int *data, Board b ){
 
     //printf("EdgeSpreading\n\n");
