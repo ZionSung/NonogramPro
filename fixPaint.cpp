@@ -5,19 +5,29 @@
 
 int dp[26][14];
 int d[Len/2+1];
+// 25 x 25
 char S[Len+1] = {'u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u','u'};
+// 5 x 5
+//char S[Len+1] = {'u','u','u','u','u','u'};
 int f1[Len+1];
 int f0[Len+1];
 int low[Len+1];
 int line[Len];
-int new_pixel[50]{};
+int new_pixel[probLen]{};
 int hasNewPaint = 0;
 
 Board FixPaint::lineSolving( int *data, Board b ){
 
     for( int num = 0; num < probLen; num++ ){
-
+        /*
+        if( num == 37 ){
+            printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+        }
+        */
+        //printf("num => %d\n", num );
         b.getLine(line, num);
+        lineToS(line);
+        //printLine();
         //b.printLine(line);
 
         int dataShift = num*maxClue;
@@ -60,9 +70,13 @@ Board FixPaint::lineSolving( int *data, Board b ){
         hasNewPaint = 0;
 
         for( int num = 0; num < probLen; num++ ){
+            
+            //printf("new_pixel[%d] = %d\n",num, new_pixel[num]);
             if( new_pixel[num] == 1 ){
-                //printf("num = %d\n", num );
+                //printf("New Pixel => num = %d\n", num );
                 b.getLine(line, num);
+                lineToS(line);
+                //printLine();
                 //b.printLine(line);
 
                 int dataShift = num*maxClue;
@@ -97,6 +111,22 @@ Board FixPaint::lineSolving( int *data, Board b ){
 
     return b;
 
+}
+
+void FixPaint::lineToS( int *data ){
+    // mirror
+    // line 0 1 2 3 4 
+    // S    5 4 3 2 1
+
+    for( int i = 0; i < Len; i++ ){
+        if( line[i] == 0 ){
+            S[i+1] = '0';
+        }
+        else if( line[i] == 1 ){
+            S[i+1] = '1';
+            //printLine();
+        }
+    }
 }
 
 void FixPaint::printInt( int* array, int l ){
@@ -201,33 +231,94 @@ bool FixPaint::P( int i, int f, int j ){
 
 
     if(tempP1 == true && tempP0 == false){
+        //printf("Paint One (%d, %d)  ", i, j);
+
         //printf("FOUR P1 true P0 false ");
         f1[i] = true;
+        
         low[i] = i - d[j] + 1;
+        //printf("i = %d, low[i] = %d\n", i, i - d[j] +1 );
         if(j > 1){
             f0[i-d[j]] = 1; // remember paint i - d[j] to 0
         }
+
+        // if j == 0, and paint1 is true.
+        // then remaining cells may paint 0
+        
+        if( j == 1 ){
+            //printf("hello!!! low[i] = %d\n", low[i]);
+            for( int count = 0; count < low[i]; count++ ){
+                f0[count] = 1;
+            }
+        }
+        
         //printf("%d,%d\n", i, j );
         dp[i][j] = 1;
+
+        for( int i = 1; i < Len+1; i++ ){
+            if( f1[i]==true && low[i]!=0 ){
+                for(int j = low[i]; j <= i; j++ ){
+                    f1[j] = 1;
+                }
+            }
+        }
+        /*
+        printf("fix1 --> ");
+        printInt(f1,Len+1);
+        printf("fix0 --> ");
+        printInt(f0,Len+1);
+        */
         return true;
     }
     else if(tempP1==true&&tempP0==true){
+        //printf("Both Paint (%d, %d)  ", i, j);
+        //printf("i = %d, low[i] = %d\n", i, i - d[j] +1 );
+        
         //printf("SIX both true ");
         f1[i] = true;
         if(j > 1){
             f0[i-d[j]] = 1; // remember paint i - d[j] to 0
         }
+
+        if( j == 1 ){
+            //printf("hello!!! low[i] = %d\n", low[i]);
+            for( int count = 0; count < low[i]; count++ ){
+                f0[count] = 1;
+            }
+        }
+
         low[i] = i - d[j] + 1;
         f0[i] = true;
         //printf("%d,%d\n", i, j );
         dp[i][j] = 1;
+        for( int i = 1; i < Len+1; i++ ){
+            if( f1[i]==true && low[i]!=0 ){
+                for(int j = low[i]; j <= i; j++ ){
+                    f1[j] = 1;
+                }
+            }
+        }
+        /*
+        printf("fix1 --> ");
+        printInt(f1,Len+1);
+        printf("fix0 --> ");
+        printInt(f0,Len+1);
+        */
         return true;
     }
     else if( tempP0 == true && tempP1 == false ){
+        //printf("Paint Zero (%d, %d)  ", i, j);
+        //printf("i = %d\n", i );
         //printf("FIFE P0 true P1 false ");
         f0[i] = true;
         //printf("%d,%d\n", i, j );
         dp[i][j] = 1;
+        /*
+        printf("fix1 --> ");
+        printInt(f1,Len+1);
+        printf("fix0 --> ");
+        printInt(f0,Len+1);
+        */
         return true;
     }
     else{
@@ -271,22 +362,19 @@ void FixPaint::init_dp(){
 
 void FixPaint::insert( int* line, int num ){
 
-    for( int i = 1; i < Len+1; i++ ){
-        if( f1[i]==true && low[i]!=0 ){
-            for(int j = low[i]; j <= i; j++ ){
-                f1[j] = 1;
-            }
-        }
-    }
-
     /*
-    printf("fix1 --> ");
+    
+    printf("\nFinal ->\nfix1 --> ");
     printInt(f1,Len+1);
     printf("fix0 --> ");
     printInt(f0,Len+1);
+
     */
+    
+    
 
     for( int i = 1; i < Len+1; i++ ){
+        //printf("new_pixel => ");
         if(f1[i] == true && f0[i] == false){
             if( line[i-1] == 1){
                 //printf("It's already One\n");
@@ -295,8 +383,10 @@ void FixPaint::insert( int* line, int num ){
             {
                 line[i-1] = 1;
                 //printf("new pixel 1 at [%d][%d]\n", i-1, num );
+                // 0 1 2 3 4 
+                // 5 6 7 8 9
                 new_pixel[i-1] = 1;
-                new_pixel[num] = 1;
+                new_pixel[i+Len-1] = 1;
                 hasNewPaint = 1;
             }
             
@@ -309,11 +399,17 @@ void FixPaint::insert( int* line, int num ){
                 line[i-1] = 0;
                 //printf("new pixel 0\n");
                 new_pixel[i-1] = 1;
-                new_pixel[num] = 1;
+                new_pixel[i+Len-1] = 1;
                 hasNewPaint = 1;
             }
         }
     }
-
+    /*
+    printf("\nnew_pixel array => ");
+    for( int i = 0; i < probLen; i++ ){
+        printf("%d ", new_pixel[i]);
+    }
+    printf("\n");
+    */
     
 }

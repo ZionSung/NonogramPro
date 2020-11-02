@@ -20,6 +20,7 @@ class FixPaint
         void init_dp();
         void insert( int*, int );
         void printInt( int*, int );
+        void lineToS( int* );
 
 };
 

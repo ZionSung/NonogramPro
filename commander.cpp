@@ -15,8 +15,8 @@ int Commander::Start( int* data ){
     //b.printBoard();
     b1 = fpSolver.lineSolving( data, b );
     //useBoard.CompareBoard( b, b1 );
-    //b2 = lgSolver.RLmost( data, b );
-    //useBoard.CompareBoard( b1, b2 );
+    b2 = lgSolver.RLmost( data, b );
+    useBoard.CompareBoard( b2, b1 );
     
     
     //lgSolver.EdgeSpreading( data, b1 );
