@@ -16,6 +16,10 @@ int Commander::Start( int* data ){
     b1 = fpSolver.lineSolving( data, b );
     //useBoard.CompareBoard( b, b1 );
     b2 = lgSolver.RLmost( data, b );
+    printf("############## SUB2 ################\n");
+    b2 = lgSolver.Sub2( data, b2 );
+    printf("############## NEXT SUB2 #################\n");
+    b2 = lgSolver.Sub2( data, b2 );
     useBoard.CompareBoard( b2, b1 );
     
     

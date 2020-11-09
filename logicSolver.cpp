@@ -68,8 +68,151 @@ Board LogicSolver::Sub2( int *data, Board b ){
         int line[Len];
         b.getLine( line, num );
 
-    }
+        int dataShift = num*maxClue;
+        int j = data[dataShift];
+        int hasPainted_seg_len[j+1]{};
+        int hasPainted_seg_place[j+1]{};
+        int segment = 0;
+        int cont = 0;
 
+        printf("clue -> ");
+        for( int i = 0; i < j; i++ ){
+            printf("%d ", data[dataShift+i+1]);
+        }
+        printf("\n");
+        printf("1 -> ");
+        b.printLine(line);
+
+        // How many segment has painted
+        for( int i = 0; i < Len; i++ ){ // org clue [max]
+            if(line[i] == 1 && cont == 0){
+                segment++;
+                hasPainted_seg_len[segment]++;
+                hasPainted_seg_place[segment] = i;
+                // dealing with margin
+                /*
+                if( hasPainted_seg_place[i] == 0 ){ // ex. 1 1 x x x and clue is 3
+                    int count = 0;
+                    for( count = 0; count < this_clue; count++ ){
+                        line[count] = 1;
+                    }
+                    line[count] = 0;
+                }
+                */
+                cont = 1;
+            }
+            else if(line[i] != 1){
+                cont = 0;
+            }
+            else{ // line[i] == 1 && cont == 1
+                hasPainted_seg_len[segment]++;
+            }
+        }
+
+        printf("segment = %d\n", segment);
+        for( int i = 1; i <= segment; i++ ){
+            printf("len = %d ", hasPainted_seg_len[i]);
+            printf("place = %d\n", hasPainted_seg_place[i]);
+        }
+        printf("\n");
+        int this_clue = 0;
+        int remaining_blank = 0;
+        int may_be_one[Len]{};
+
+        // init may_be_one
+        /*
+        for( int i = 0; i < Len; i++ ){
+            if( line[i] == 1){
+                may_be_one[i] = 1;
+            }
+        } 
+        */
+
+        int may_be_one_flag = 0;
+
+
+        if( segment == j ){
+            for( int i = 1; i <= j; i++ ){
+                this_clue = data[dataShift+i];
+                printf("this_clue = %d\n", this_clue );
+
+                remaining_blank = this_clue - hasPainted_seg_len[i];
+                printf("remaining_blank = %d\n", remaining_blank);
+
+                if( remaining_blank == 0 && j == 1){
+                    // complement 0
+                    for( int i = 0; i < Len; i++ ){
+                        if( line[i] == 2 ){
+                            line[i] = 0;
+                        }
+                    }
+                }
+                else{
+                    
+
+                    int begin_mayOne = hasPainted_seg_place[i] - remaining_blank;
+                    int end_mayOne = hasPainted_seg_place[i] + hasPainted_seg_len[i] + remaining_blank - 1;
+                    // check margin
+                    if( begin_mayOne < 0 ){
+                        printf("begin_mayOne < 0\n");
+                        for( int count = 0; count < this_clue; count++ ){
+                            line[count] = 1;
+                            may_be_one[count] = 1;
+                        }
+                        if( j == 1 ){
+                            for( int i = 0; i < Len; i++ ){
+                                if( line[i] != 1 ){
+                                    line[i] = 0;
+                                }
+                            }
+                        }
+                        else{
+                            line[this_clue] = 0;
+                        }
+                    }
+                    else if( end_mayOne + 1 > Len ){
+                        printf("end_mayOne + 1 > Len\n");
+                        for( int count = Len-1; count >= Len - this_clue; count-- ){
+                            line[count] = 1;
+                            may_be_one[count] = 1;
+                        }
+                        if( j == 1 ){
+                            for( int i = 0; i < Len; i++ ){
+                                if( line[i] != 1 ){
+                                    line[i] = 0;
+                                }
+                            }
+                        }
+                        else{
+                            line[Len-this_clue-1] = 0;
+                        }
+                    }
+                    else{
+                        printf("normal\n");
+                        may_be_one_flag = 1;
+                        for( int count = begin_mayOne; count <= end_mayOne; count++ ){
+                            may_be_one[count] = 1;
+                        } 
+                    }
+                }
+            }
+            if( may_be_one_flag == 1 ){
+                for( int i = 0; i < Len; i++ ){
+                    if( may_be_one[i] == 0 ){
+                        line[i] = 0;
+                    }
+                }
+            }
+        }
+        else{
+            printf("No.%d has not match sub2\n", num );
+        }
+        printf("2 -> ");
+        b.printLine(line);
+        printf("#############################################\n");
+        b.recover(line,num);
+    } // end for loop 
+    b.printBoard(b);
     return b;
 }
 
