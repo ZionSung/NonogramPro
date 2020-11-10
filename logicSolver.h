@@ -10,12 +10,11 @@ class LogicSolver
     public:
         LogicSolver() {}
         Board RLmost( int* , Board );
+        Board Sub1( int*, Board );
         Board Sub2( int*, Board );
-        
-        int EdgeSpreading( int*, Board );
-        int Padding( int*, Board );
-        int AccRLmost( int*, Board ); // According
-        void ScanLine( int* );
+        Board Sub3( int*, Board );
+        Board Sub4( int*, Board );
+        Board Sub5( int*, Board );
 };
 
 #endif 
