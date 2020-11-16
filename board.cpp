@@ -90,9 +90,10 @@ void Board::printBoard( Board& board ){
     printf("\n========================================\n\n");
 }
 
-void Board::CompareBoard( Board& oldBoard, Board& newBoard ){
+int Board::CompareBoard( Board& oldBoard, Board& newBoard ){
 
     int hasNew = 0;
+    
     for( int i = 0; i < Len; i++ ){
         for( int j = 0; j < Len; j++ ){
             if( oldBoard.orgBoard[i][j] == 2  &&  newBoard.orgBoard[i][j] == 1 ){
@@ -109,6 +110,7 @@ void Board::CompareBoard( Board& oldBoard, Board& newBoard ){
             }
         }
     }
+    
 
     if( hasNew == 0 ){
         printf("\n\nThere is NO new pixel\n");
@@ -116,6 +118,8 @@ void Board::CompareBoard( Board& oldBoard, Board& newBoard ){
     else{
         printf(" \n\n%d pixel are different\n", hasNew );   
     }
+
+    return hasNew;
 
 }
 

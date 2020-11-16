@@ -1,18 +1,5 @@
 #include "logicSolver.h"
 
-int onePosition[maxClue]{};
-int oneNum[maxClue]{};
-int zeroNum[maxClue]{};
-int emptyNum[maxClue]{};
-int oneSeg = 0;
-int zeroSeg = 0;
-int emptySeg = 0;
-int oneCont = 0;
-int zeroCont = 0;
-int emptyCont = 0;
-int onePositionCount = 0;
-int postionCount = 0;
-
 int shift = 0;
 
 int finish[probLen]{};
@@ -63,7 +50,8 @@ Board LogicSolver::RLmost( int *data, Board b ){
 
 // find "0"( has painted ) as a limit to probe new dot.
 Board LogicSolver::Sub1( int *data, Board b ){
-    for ( int num = 0; num < 10; num++ ){
+    for ( int num = 0; num < probLen; num++ ){
+        printf("Num: %d\n", num );
         int line[Len];
         b.getLine( line, num );
         int dataShift = num*maxClue;
@@ -94,36 +82,101 @@ Board LogicSolver::Sub1( int *data, Board b ){
         // 1. there is only one segment > tatol j
         // -> so we need to find the lowest j then find weather there is any segment > "it"
 
-        // get lowest j
+        // get lowest j & total_j
         int lowest_j = Len;
+        //int total_j = 0;
         for( int i = 0; i < j; i++ ){
             if( data[dataShift+i+1] < lowest_j ){
                 lowest_j = data[dataShift+i+1];
             }
-            printf("lowest j = %d\n", lowest_j );
+
+            //total_j += data[dataShift+i+1];
         }
+        printf("lowest j = %d\n", lowest_j );
+        //printf("total_j = %d\n", total_j);
  
 
         // find segment
-        int find_zero = 0;
         int find_next_zero = 0;
         int segment_len = 0;
+        int seg_count = 0; // if seg_count > 1 it can't do this rule
+        int seg_head = 0;
+        int seg_tail = 0;
+        int used_seg = 0;
+        int skip_sub1 = 0;
 
         for( int i = 0; i < Len; i++ ){
 
             // maybe we should add skip one machanism here
 
             if( line[i] == 0 ){
+
                 segment_len = i - find_next_zero;
                 printf("segment = %d\n", segment_len );
+                if( segment_len >= lowest_j ){
+                    seg_head = find_next_zero;
+                    seg_tail = i-1;
+                    seg_count++;
+                    used_seg = segment_len;
+                    printf("seg_head = %d, seg_tail = %d\n", seg_head, seg_tail);
+                }
+
+                if( seg_count > 1 ){
+                    printf("<<SKIP SUB2>> => seg_count > 1\n");
+                    skip_sub1 = 1;
+                    break;
+                }
                 find_next_zero = i+1;
             }
-        }
+            else if( i == Len - 1 ){
+                segment_len = i - find_next_zero + 1;
+                printf("segment = %d\n", segment_len );
+                if( segment_len >= lowest_j ){
+                    seg_head = find_next_zero;
+                    seg_tail = i;
+                    seg_count++;
+                    used_seg = segment_len;
+                    printf("seg_head = %d, seg_tail = %d\n", seg_head, seg_tail);
+                }
 
+                if( seg_count > 1 ){
+                    printf("<<SKIP SUB2>> => seg_count > 1\n");
+                    skip_sub1 = 1;
+                    break;
+                }
+            }
+        }
+        // start RLmost in the segment
+        
+        if( skip_sub1 == 0 ){
+            int totaClue = 0;
+            for( int i = 0; i < j; i++ ){
+                totaClue += data[dataShift+i+1]; // because the fisrt one is j
+            }
+            totaClue = totaClue + j - 1;
+            shift = used_seg - totaClue;
+            printf("shift = %d\n", shift );
+            int point = shift;
+            for( int i = 0; i < j; i++ ){
+                printf("get in => \n");
+                if( shift < data[dataShift+i+1] ){
+                    int paint = data[dataShift+i+1] - shift; // how many spaces we shall paint
+                    printf("paint = %d\n", paint );
+                    for( int p = seg_head; p < seg_head+paint; p++ ){
+                        line[p + point] = 1;
+                        printf("### p + point = %d ###\n", p + point );
+                    }
+                }
+            
+                point += data[dataShift+i+1];
+                point++;
+            }
+        }
+        
         // ##################################
         //            End Sub1 
         // ##################################
-        
+        b.printLine(line);
         b.recover(line,num);
         b.printBoard(b);
     }
@@ -133,6 +186,7 @@ Board LogicSolver::Sub1( int *data, Board b ){
 
 Board LogicSolver::Sub2( int *data, Board b ){
     for( int num = 0; num < probLen; num++ ){
+        printf("Num = %d\n", num );
         int line[Len];
         b.getLine( line, num );
 
@@ -265,6 +319,7 @@ Board LogicSolver::Sub2( int *data, Board b ){
                     else{
                         printf("normal\n");
                         may_be_one_flag = 1;
+                        printf("begin_mayOne = %d, end_mayOne = %d\n", begin_mayOne, end_mayOne );
                         for( int count = begin_mayOne; count <= end_mayOne; count++ ){
                             may_be_one[count] = 1;
                         } 

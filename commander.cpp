@@ -9,27 +9,43 @@ int Commander::Start( int* data ){
     // Logic Solve
     LogicSolver lgSolver;
     FixPaint fpSolver;
-    Board b1;
-    Board b2;
+    Board newBoard;
+    Board oldBoard;
 
+    int new_pixel = 1;
     //b.printBoard();
     //b1 = fpSolver.lineSolving( data, b );
     //useBoard.CompareBoard( b, b1 );
-    b2 = lgSolver.RLmost( data, b );
+    
+    newBoard = lgSolver.RLmost( data, newBoard );
+    int round = 0;
+    while( new_pixel > 0 ){
+        oldBoard = newBoard;
+        newBoard = lgSolver.Sub2( data, newBoard );
+        newBoard = lgSolver.Sub1( data, newBoard );
+        new_pixel = useBoard.CompareBoard( newBoard, oldBoard );
+        round++;
+    }
+    printf("round = %d\n", round );
+
+
+    /*
     printf("############## SUB2 ################\n");
+    newBoard = lgSolver.Sub2( data, newBoard );
+    printf("\n#########################\n          NEXT         \n#########################\n\n\n");
+    b2 = lgSolver.Sub1( data, newBoard );
+    new_pixel = useBoard.CompareBoard( b2, b );
+    printf("\n#########################\n          NEXT         \n#########################\n\n\n");
     b2 = lgSolver.Sub2( data, b2 );
+    useBoard.CompareBoard( b2, b );
     printf("\n#########################\n          NEXT         \n#########################\n\n\n");
     b2 = lgSolver.Sub1( data, b2 );
-    //printf("############## NEXT SUB2 #################\n");
-    //b2 = lgSolver.Sub2( data, b2 );
-    //useBoard.CompareBoard( b2, b1 );
-    
-    
-    //lgSolver.EdgeSpreading( data, b1 );
-    //lgSolver.Padding( data, b );
-    //lgSolver.Padding( data, b );
-    //lgSolver.Padding( data, b );
-    //lgSolver.AccRLmost( data, b );
+    useBoard.CompareBoard( b2, b );
+    printf("\n#########################\n          NEXT         \n#########################\n\n\n");
+    b2 = lgSolver.Sub2( data, b2 );
+    useBoard.CompareBoard( b2, b );
+    */
+        
 
     return CORRECT;
 

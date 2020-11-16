@@ -13,7 +13,7 @@ class Board
         void recover( int*, int );
         void printLine( int* );
         void printBoard(Board&);
-        void CompareBoard( Board&, Board& );
+        int CompareBoard( Board&, Board& );
 };
 
 #endif
