@@ -27,7 +27,6 @@ int Commander::Start( int* data ){
         round++;
     }
     printf("round = %d\n", round );
-
     useBoard.CompareBoard( newBoard, b );
 
 

@@ -146,8 +146,8 @@ Board LogicSolver::Sub1( int *data, Board b ){
                 }
             }
         }
+
         // start RLmost in the segment
-        
         if( skip_sub1 == 0 ){
             int totaClue = 0;
             for( int i = 0; i < j; i++ ){
@@ -307,14 +307,55 @@ Board LogicSolver::Sub2( int *data, Board b ){
                         printf("begin = %d, end = %d\n", begin_mayOne, end_mayOne );
                         b.printLine(line);
 
-                        int new_begin = 0;
-                        int new_end = 0;
+                        //int left_margin = 0;
+                        int right_margin = 0;
                         // check "0" from left to right
                         for( int i = begin_mayOne; i < Len; i++ ){
                             //begin_mayOne = i;
                             if( line[i] == 2 ){
-                                printf("Not deal with yet\n");
-                                new_begin = i;
+                                
+                                int leftPaint = 0;
+                                int rightPaint = 0;
+                                // clue = 3
+                                // 0 1 2 3 4 5 6 7 8 9  
+                                // 0 0 0 x x x 1 x 0 0
+                                // 
+                                // right most?
+                                // end_mayOne = 9
+                                // but it is too much
+                                // so, we need to find postition "0" and calulate
+                                // right_margin = 8
+                                // then left_paint = right_margin - clue = 8 - 3 = 5
+
+                                // try RLmost 
+                                printf("Try RLmost according to this clue\n");
+                                // find right margin
+                                for( int j = i; j < Len; j++ ){
+                                    if( line[j] == 0 ){
+                                        right_margin = j;
+                                        break;
+                                    }
+                                }
+                                
+                                leftPaint = right_margin - this_clue;
+                                printf("leftPaint = %d\n", leftPaint );
+                                
+                                
+                                // how about left most?
+                                // Ex.
+                                // 0 1 2 3 4 5 6 7 8 9
+                                // 0 0 0 0 x 1 x x 0 0
+                                // 0 0 0 0 1 1 1 x 0 0
+                                // left most = i + this_clue - 1
+
+                                rightPaint = i + this_clue - 1;
+                                printf("rightPaint = %d\n", right_margin );
+
+                                // Paint One!
+                                for( int i = leftPaint; i < rightPaint; i++ ){
+                                    line[i] = 1;
+                                } 
+
                                 break;
                             }
                             else if( line[i] == 1 ){
