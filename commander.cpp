@@ -28,6 +28,8 @@ int Commander::Start( int* data ){
     }
     printf("round = %d\n", round );
 
+    useBoard.CompareBoard( newBoard, b );
+
 
     /*
     printf("############## SUB2 ################\n");

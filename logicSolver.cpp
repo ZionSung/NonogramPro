@@ -89,7 +89,7 @@ Board LogicSolver::Sub1( int *data, Board b ){
             if( data[dataShift+i+1] < lowest_j ){
                 lowest_j = data[dataShift+i+1];
             }
-
+            
             //total_j += data[dataShift+i+1];
         }
         printf("lowest j = %d\n", lowest_j );
@@ -122,7 +122,7 @@ Board LogicSolver::Sub1( int *data, Board b ){
                 }
 
                 if( seg_count > 1 ){
-                    printf("<<SKIP SUB2>> => seg_count > 1\n");
+                    printf("<<SKIP SUB1>> => seg_count > 1\n");
                     skip_sub1 = 1;
                     break;
                 }
@@ -140,7 +140,7 @@ Board LogicSolver::Sub1( int *data, Board b ){
                 }
 
                 if( seg_count > 1 ){
-                    printf("<<SKIP SUB2>> => seg_count > 1\n");
+                    printf("<<SKIP SUB1>> => seg_count > 1\n");
                     skip_sub1 = 1;
                     break;
                 }
@@ -218,16 +218,7 @@ Board LogicSolver::Sub2( int *data, Board b ){
                 segment++;
                 hasPainted_seg_len[segment]++;
                 hasPainted_seg_place[segment] = i;
-                // dealing with margin
-                /*
-                if( hasPainted_seg_place[i] == 0 ){ // ex. 1 1 x x x and clue is 3
-                    int count = 0;
-                    for( count = 0; count < this_clue; count++ ){
-                        line[count] = 1;
-                    }
-                    line[count] = 0;
-                }
-                */
+                
                 cont = 1;
             }
             else if(line[i] != 1){
@@ -246,16 +237,7 @@ Board LogicSolver::Sub2( int *data, Board b ){
         printf("\n");
         int this_clue = 0;
         int remaining_blank = 0;
-        int may_be_one[Len]{};
-
-        // init may_be_one
-        /*
-        for( int i = 0; i < Len; i++ ){
-            if( line[i] == 1){
-                may_be_one[i] = 1;
-            }
-        } 
-        */
+        int may_be_one[Len]{}; // initial may_be_one to "0"
 
         int may_be_one_flag = 0;
 
@@ -270,6 +252,7 @@ Board LogicSolver::Sub2( int *data, Board b ){
 
                 if( remaining_blank == 0 && j == 1){
                     // complement 0
+                    printf("because remaining_blank == 0 && j == 1, so we complement \"0\"\n");
                     for( int i = 0; i < Len; i++ ){
                         if( line[i] == 2 ){
                             line[i] = 0;
@@ -278,9 +261,9 @@ Board LogicSolver::Sub2( int *data, Board b ){
                 }
                 else{
                     
-
                     int begin_mayOne = hasPainted_seg_place[i] - remaining_blank;
                     int end_mayOne = hasPainted_seg_place[i] + hasPainted_seg_len[i] + remaining_blank - 1;
+
                     // check margin
                     if( begin_mayOne < 0 ){
                         printf("begin_mayOne < 0\n");
@@ -317,7 +300,45 @@ Board LogicSolver::Sub2( int *data, Board b ){
                         }
                     }
                     else{
-                        printf("normal\n");
+                        printf("***************\nNormal Start\n***************\n");
+
+                        // check margin 
+                        printf("check margin => ");
+                        printf("begin = %d, end = %d\n", begin_mayOne, end_mayOne );
+                        b.printLine(line);
+
+                        int new_begin = 0;
+                        int new_end = 0;
+                        // check "0" from left to right
+                        for( int i = begin_mayOne; i < Len; i++ ){
+                            //begin_mayOne = i;
+                            if( line[i] == 2 ){
+                                printf("Not deal with yet\n");
+                                new_begin = i;
+                                break;
+                            }
+                            else if( line[i] == 1 ){
+                                printf("<Sub2 Implement 1 nearby 0 -> Extend!>\n");
+                                end_mayOne = i + this_clue - 1;
+                                begin_mayOne = i;
+
+                                // paint 1 
+                                for( int i = begin_mayOne; i <= end_mayOne; i++ ){
+                                    line[i] = 1;
+                                } 
+                                
+                                break;
+                            }
+                        }
+                        /*
+                        printf("old begin = %d\n", begin_mayOne );
+                        printf("new begin = %d\n", new_begin );
+
+                        printf("old end = %d\n", end_mayOne );
+                        printf("new end = %d\n", new_end );
+                        */
+
+                        printf("***************\nNormal End\n***************\n");
                         may_be_one_flag = 1;
                         printf("begin_mayOne = %d, end_mayOne = %d\n", begin_mayOne, end_mayOne );
                         for( int count = begin_mayOne; count <= end_mayOne; count++ ){
@@ -326,6 +347,7 @@ Board LogicSolver::Sub2( int *data, Board b ){
                     }
                 }
             }
+
             if( may_be_one_flag == 1 ){
                 for( int i = 0; i < Len; i++ ){
                     if( may_be_one[i] == 0 ){
@@ -333,6 +355,7 @@ Board LogicSolver::Sub2( int *data, Board b ){
                     }
                 }
             }
+
         }
         else{
             printf("No.%d has not match sub2\n", num );
