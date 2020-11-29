@@ -24,29 +24,11 @@ int Commander::Start( int* data ){
         newBoard = lgSolver.Sub2( data, newBoard );
         newBoard = lgSolver.Sub1( data, newBoard );
         new_pixel = useBoard.CompareBoard( newBoard, oldBoard );
+        //if( round == 2 )break;
         round++;
     }
     printf("round = %d\n", round );
-    useBoard.CompareBoard( newBoard, b );
-
-
-    /*
-    printf("############## SUB2 ################\n");
-    newBoard = lgSolver.Sub2( data, newBoard );
-    printf("\n#########################\n          NEXT         \n#########################\n\n\n");
-    b2 = lgSolver.Sub1( data, newBoard );
-    new_pixel = useBoard.CompareBoard( b2, b );
-    printf("\n#########################\n          NEXT         \n#########################\n\n\n");
-    b2 = lgSolver.Sub2( data, b2 );
-    useBoard.CompareBoard( b2, b );
-    printf("\n#########################\n          NEXT         \n#########################\n\n\n");
-    b2 = lgSolver.Sub1( data, b2 );
-    useBoard.CompareBoard( b2, b );
-    printf("\n#########################\n          NEXT         \n#########################\n\n\n");
-    b2 = lgSolver.Sub2( data, b2 );
-    useBoard.CompareBoard( b2, b );
-    */
-        
+    useBoard.CompareBoard( b, newBoard );        
 
     return CORRECT;
 

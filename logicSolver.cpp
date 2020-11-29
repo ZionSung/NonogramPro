@@ -308,7 +308,7 @@ Board LogicSolver::Sub2( int *data, Board b ){
                         b.printLine(line);
 
                         //int left_margin = 0;
-                        int right_margin = 0;
+                        int right_margin = end_mayOne + 1;
                         // check "0" from left to right
                         for( int i = begin_mayOne; i < Len; i++ ){
                             //begin_mayOne = i;
@@ -316,6 +316,7 @@ Board LogicSolver::Sub2( int *data, Board b ){
                                 
                                 int leftPaint = 0;
                                 int rightPaint = 0;
+
                                 // clue = 3
                                 // 0 1 2 3 4 5 6 7 8 9  
                                 // 0 0 0 x x x 1 x 0 0
@@ -330,13 +331,14 @@ Board LogicSolver::Sub2( int *data, Board b ){
                                 // try RLmost 
                                 printf("Try RLmost according to this clue\n");
                                 // find right margin
-                                for( int j = i; j < Len; j++ ){
+                                for( int j = i; j <= end_mayOne; j++ ){
                                     if( line[j] == 0 ){
                                         right_margin = j;
                                         break;
                                     }
                                 }
-                                
+                                printf("debug => ");
+                                printf("right_margin = %d, this_clue = %d\n", right_margin, this_clue );
                                 leftPaint = right_margin - this_clue;
                                 printf("leftPaint = %d\n", leftPaint );
                                 
