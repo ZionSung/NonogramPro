@@ -5,14 +5,14 @@ int shift = 0;
 int finish[probLen]{};
 
 Board LogicSolver::RLmost( int *data, Board b ){
+
     // run each line
     for( int num = 0; num < probLen; num++ ){
-        //printf("%d -- \n", num+1 );
+
         // get line
         int line[Len];
         b.getLine(line, num);
-        //printf("1: ");
-        //b.printLine(line);
+
         // main
         int dataShift = num*maxClue;
         int j = data[dataShift];
@@ -23,41 +23,33 @@ Board LogicSolver::RLmost( int *data, Board b ){
         totaClue = totaClue + j - 1;
         shift = Len - totaClue;
         int point = shift;
-        //printf("shift = %d\n", shift );
         for( int i = 0; i < j; i++ ){
-
             if( shift < data[dataShift+i+1] ){
                 int paint = data[dataShift+i+1] - shift; // how many spaces we shall paint
                 for( int p = 0; p < paint; p++ ){
                     line[p + point] = 1;
                 }
             }
-            
             point += data[dataShift+i+1];
             point++;
         }
-        //printf("2: ");
-        //b.printLine(line);
-        //ScanLine(line);
-        // recover to board
         b.recover(line,num);
     }
-    
-    b.printBoard(b);
-
+    //b.printBoard(b);
     return b;
 }
 
 // find "0"( has painted ) as a limit to probe new dot.
 Board LogicSolver::Sub1( int *data, Board b ){
     for ( int num = 0; num < probLen; num++ ){
-        printf("Num: %d\n", num );
+        //printf("Num: %d\n", num );
         int line[Len];
         b.getLine( line, num );
         int dataShift = num*maxClue;
         int j = data[dataShift];
 
         // analyze
+        /*
         printf("clue -> ");
         for( int i = 0; i < j; i++ ){
             printf("%d ", data[dataShift+i+1]);
@@ -65,6 +57,7 @@ Board LogicSolver::Sub1( int *data, Board b ){
         printf("\n");
         printf("1 -> ");
         b.printLine(line);
+        */
 
         // ##################################
         //           Start Sub1 
@@ -84,16 +77,12 @@ Board LogicSolver::Sub1( int *data, Board b ){
 
         // get lowest j & total_j
         int lowest_j = Len;
-        //int total_j = 0;
         for( int i = 0; i < j; i++ ){
             if( data[dataShift+i+1] < lowest_j ){
                 lowest_j = data[dataShift+i+1];
             }
-            
-            //total_j += data[dataShift+i+1];
         }
-        printf("lowest j = %d\n", lowest_j );
-        //printf("total_j = %d\n", total_j);
+        //printf("lowest j = %d\n", lowest_j );
  
 
         // find segment
@@ -108,21 +97,20 @@ Board LogicSolver::Sub1( int *data, Board b ){
         for( int i = 0; i < Len; i++ ){
 
             // maybe we should add skip one machanism here
-
             if( line[i] == 0 ){
 
                 segment_len = i - find_next_zero;
-                printf("segment = %d\n", segment_len );
+                //printf("segment = %d\n", segment_len );
                 if( segment_len >= lowest_j ){
                     seg_head = find_next_zero;
                     seg_tail = i-1;
                     seg_count++;
                     used_seg = segment_len;
-                    printf("seg_head = %d, seg_tail = %d\n", seg_head, seg_tail);
+                    //printf("seg_head = %d, seg_tail = %d\n", seg_head, seg_tail);
                 }
 
                 if( seg_count > 1 ){
-                    printf("<<SKIP SUB1>> => seg_count > 1\n");
+                    //printf("<<SKIP SUB1>> => seg_count > 1\n");
                     skip_sub1 = 1;
                     break;
                 }
@@ -130,17 +118,17 @@ Board LogicSolver::Sub1( int *data, Board b ){
             }
             else if( i == Len - 1 ){
                 segment_len = i - find_next_zero + 1;
-                printf("segment = %d\n", segment_len );
+                //printf("segment = %d\n", segment_len );
                 if( segment_len >= lowest_j ){
                     seg_head = find_next_zero;
                     seg_tail = i;
                     seg_count++;
                     used_seg = segment_len;
-                    printf("seg_head = %d, seg_tail = %d\n", seg_head, seg_tail);
+                    //printf("seg_head = %d, seg_tail = %d\n", seg_head, seg_tail);
                 }
 
                 if( seg_count > 1 ){
-                    printf("<<SKIP SUB1>> => seg_count > 1\n");
+                    //printf("<<SKIP SUB1>> => seg_count > 1\n");
                     skip_sub1 = 1;
                     break;
                 }
@@ -155,16 +143,16 @@ Board LogicSolver::Sub1( int *data, Board b ){
             }
             totaClue = totaClue + j - 1;
             shift = used_seg - totaClue;
-            printf("shift = %d\n", shift );
+            //printf("shift = %d\n", shift );
             int point = shift;
             for( int i = 0; i < j; i++ ){
-                printf("get in => \n");
+                //printf("get in => \n");
                 if( shift < data[dataShift+i+1] ){
                     int paint = data[dataShift+i+1] - shift; // how many spaces we shall paint
-                    printf("paint = %d\n", paint );
+                    //printf("paint = %d\n", paint );
                     for( int p = seg_head; p < seg_head+paint; p++ ){
                         line[p + point] = 1;
-                        printf("### p + point = %d ###\n", p + point );
+                        //printf("### p + point = %d ###\n", p + point );
                     }
                 }
             
@@ -176,17 +164,16 @@ Board LogicSolver::Sub1( int *data, Board b ){
         // ##################################
         //            End Sub1 
         // ##################################
-        b.printLine(line);
+        //b.printLine(line);
         b.recover(line,num);
-        b.printBoard(b);
+        //b.printBoard(b);
     }
     return b;
 }
 
-
 Board LogicSolver::Sub2( int *data, Board b ){
     for( int num = 0; num < probLen; num++ ){
-        printf("Num = %d\n", num );
+        //printf("Num = %d\n", num );
         int line[Len];
         b.getLine( line, num );
 
@@ -203,7 +190,7 @@ Board LogicSolver::Sub2( int *data, Board b ){
             hasPainted_seg_place[i] = 0;
         }
 
-
+        /*
         printf("clue -> ");
         for( int i = 0; i < j; i++ ){
             printf("%d ", data[dataShift+i+1]);
@@ -211,6 +198,7 @@ Board LogicSolver::Sub2( int *data, Board b ){
         printf("\n");
         printf("1 -> ");
         b.printLine(line);
+        */
 
         // How many segment has painted
         for( int i = 0; i < Len; i++ ){ // org clue [max]
@@ -229,12 +217,15 @@ Board LogicSolver::Sub2( int *data, Board b ){
             }
         }
 
+        /*
         printf("segment = %d\n", segment);
         for( int i = 1; i <= segment; i++ ){
             printf("len = %d ", hasPainted_seg_len[i]);
             printf("place = %d\n", hasPainted_seg_place[i]);
         }
         printf("\n");
+        */
+
         int this_clue = 0;
         int remaining_blank = 0;
         int may_be_one[Len]{}; // initial may_be_one to "0"
@@ -245,14 +236,14 @@ Board LogicSolver::Sub2( int *data, Board b ){
         if( segment == j ){
             for( int i = 1; i <= j; i++ ){
                 this_clue = data[dataShift+i];
-                printf("this_clue = %d\n", this_clue );
+                //printf("this_clue = %d\n", this_clue );
 
                 remaining_blank = this_clue - hasPainted_seg_len[i];
-                printf("remaining_blank = %d\n", remaining_blank);
+                //printf("remaining_blank = %d\n", remaining_blank);
 
                 if( remaining_blank == 0 && j == 1){
                     // complement 0
-                    printf("because remaining_blank == 0 && j == 1, so we complement \"0\"\n");
+                    //printf("because remaining_blank == 0 && j == 1, so we complement \"0\"\n");
                     for( int i = 0; i < Len; i++ ){
                         if( line[i] == 2 ){
                             line[i] = 0;
@@ -266,7 +257,7 @@ Board LogicSolver::Sub2( int *data, Board b ){
 
                     // check margin
                     if( begin_mayOne < 0 ){
-                        printf("begin_mayOne < 0\n");
+                        //printf("begin_mayOne < 0\n");
                         for( int count = 0; count < this_clue; count++ ){
                             line[count] = 1;
                             may_be_one[count] = 1;
@@ -283,7 +274,7 @@ Board LogicSolver::Sub2( int *data, Board b ){
                         }
                     }
                     else if( end_mayOne + 1 > Len ){
-                        printf("end_mayOne + 1 > Len\n");
+                        //printf("end_mayOne + 1 > Len\n");
                         for( int count = Len-1; count >= Len - this_clue; count-- ){
                             line[count] = 1;
                             may_be_one[count] = 1;
@@ -300,12 +291,12 @@ Board LogicSolver::Sub2( int *data, Board b ){
                         }
                     }
                     else{
-                        printf("***************\nNormal Start\n***************\n");
+                        //printf("***************\nNormal Start\n***************\n");
 
                         // check margin 
-                        printf("check margin => ");
-                        printf("begin = %d, end = %d\n", begin_mayOne, end_mayOne );
-                        b.printLine(line);
+                        //printf("check margin => ");
+                        //printf("begin = %d, end = %d\n", begin_mayOne, end_mayOne );
+                        //b.printLine(line);
 
                         //int left_margin = 0;
                         int right_margin = end_mayOne + 1;
@@ -329,7 +320,7 @@ Board LogicSolver::Sub2( int *data, Board b ){
                                 // then left_paint = right_margin - clue = 8 - 3 = 5
 
                                 // try RLmost 
-                                printf("Try RLmost according to this clue\n");
+                                //printf("Try RLmost according to this clue\n");
                                 // find right margin
                                 for( int j = i; j <= end_mayOne; j++ ){
                                     if( line[j] == 0 ){
@@ -337,10 +328,10 @@ Board LogicSolver::Sub2( int *data, Board b ){
                                         break;
                                     }
                                 }
-                                printf("debug => ");
-                                printf("right_margin = %d, this_clue = %d\n", right_margin, this_clue );
+                                //printf("debug => ");
+                                //printf("right_margin = %d, this_clue = %d\n", right_margin, this_clue );
                                 leftPaint = right_margin - this_clue;
-                                printf("leftPaint = %d\n", leftPaint );
+                                //printf("leftPaint = %d\n", leftPaint );
                                 
                                 
                                 // how about left most?
@@ -351,7 +342,7 @@ Board LogicSolver::Sub2( int *data, Board b ){
                                 // left most = i + this_clue - 1
 
                                 rightPaint = i + this_clue - 1;
-                                printf("rightPaint = %d\n", right_margin );
+                                //printf("rightPaint = %d\n", right_margin );
 
                                 // Paint One!
                                 for( int i = leftPaint; i < rightPaint; i++ ){
@@ -361,7 +352,7 @@ Board LogicSolver::Sub2( int *data, Board b ){
                                 break;
                             }
                             else if( line[i] == 1 ){
-                                printf("<Sub2 Implement 1 nearby 0 -> Extend!>\n");
+                                //printf("<Sub2 Implement 1 nearby 0 -> Extend!>\n");
                                 end_mayOne = i + this_clue - 1;
                                 begin_mayOne = i;
 
@@ -381,9 +372,9 @@ Board LogicSolver::Sub2( int *data, Board b ){
                         printf("new end = %d\n", new_end );
                         */
 
-                        printf("***************\nNormal End\n***************\n");
+                        //printf("***************\nNormal End\n***************\n");
                         may_be_one_flag = 1;
-                        printf("begin_mayOne = %d, end_mayOne = %d\n", begin_mayOne, end_mayOne );
+                        //printf("begin_mayOne = %d, end_mayOne = %d\n", begin_mayOne, end_mayOne );
                         for( int count = begin_mayOne; count <= end_mayOne; count++ ){
                             may_be_one[count] = 1;
                         } 
@@ -401,14 +392,14 @@ Board LogicSolver::Sub2( int *data, Board b ){
 
         }
         else{
-            printf("No.%d has not match sub2\n", num );
+            //printf("No.%d has not match sub2\n", num );
         }
-        printf("2 -> ");
-        b.printLine(line);
-        printf("#############################################\n");
+        //printf("2 -> ");
+        //b.printLine(line);
+        //printf("#############################################\n");
         b.recover(line,num);
     } // end for loop 
-    b.printBoard(b);
+    //b.printBoard(b);
     return b;
 }
 
