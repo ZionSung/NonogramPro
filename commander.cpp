@@ -11,11 +11,10 @@ int Commander::Start( int* data ){
     FixPaint fpSolver;
     Board newBoard;
     Board oldBoard;
-
+    Board fixPaintBoard;
     int new_pixel = 1;
-    //b.printBoard();
-    //b1 = fpSolver.lineSolving( data, b );
-    //useBoard.CompareBoard( b, b1 );
+    fixPaintBoard = fpSolver.lineSolving( data, fixPaintBoard );
+    useBoard.CompareBoard( b, fixPaintBoard );
     
     newBoard = lgSolver.RLmost( data, newBoard );
     int round = 1;
@@ -23,9 +22,10 @@ int Commander::Start( int* data ){
         printf("################################################\n                   ROUND*%d*\n################################################\n\n", round);
         oldBoard = newBoard;
         newBoard = lgSolver.Sub2( data, newBoard );
-        newBoard = lgSolver.Sub1( data, newBoard );
+        //newBoard = lgSolver.Sub1( data, newBoard );
         new_pixel = useBoard.CompareBoard( oldBoard, newBoard );
         useBoard.printBoard(newBoard);
+        break;
         round++;
     }
     printf("TOTAL ROUND = %d\n", round-1 );
