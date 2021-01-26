@@ -22,10 +22,10 @@ int Commander::Start( int* data ){
         printf("################################################\n                   ROUND*%d*\n################################################\n\n", round);
         oldBoard = newBoard;
         newBoard = lgSolver.Sub2( data, newBoard );
-        //newBoard = lgSolver.Sub1( data, newBoard );
+        newBoard = lgSolver.Sub1( data, newBoard );
         new_pixel = useBoard.CompareBoard( oldBoard, newBoard );
         useBoard.printBoard(newBoard);
-        break;
+        //break;
         round++;
     }
     printf("TOTAL ROUND = %d\n", round-1 );

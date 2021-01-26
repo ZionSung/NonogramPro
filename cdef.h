@@ -33,7 +33,7 @@
 */
 
 // File Name
-#define INPUT_FILE_NAME "question_10.txt"
+#define INPUT_FILE_NAME "one_question_10.txt"
 
 // True of False
 #define CONFLICT 0
