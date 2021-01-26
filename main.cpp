@@ -35,7 +35,6 @@ int main(int argc , char *argv[])
         // start 
         Commander command;
         command.Start( probData );
-
     }
 
     
