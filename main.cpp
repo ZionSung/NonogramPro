@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
+#include <stdlib.h>
 
 #include "scanner.h"
 #include "cdef.h"
